@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
     
     # PostgreSQL database URI
-    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://postgres:postgres@ec2-52-71-203-176.compute-1.amazonaws.com:5432/meditrack"
+    app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql+psycopg2://postgres:postgres@ec2-54-145-104-181.compute-1.amazonaws.com:5432/meditrack"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
     db.init_app(app)
