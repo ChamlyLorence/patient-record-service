@@ -1,5 +1,5 @@
 from app import create_app, db
-
+# this is a comment 2
 app = create_app()
 
 @app.before_first_request
