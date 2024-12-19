@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM 698443748044.dkr.ecr.us-east-1.amazonaws.com/python:3.9-slim
+FROM public.ecr.aws/o9y0c4v8/python:3.9-slim
 
 # Set the working directory
 WORKDIR /app
@@ -10,6 +10,8 @@ RUN pip install -r requirements.txt
 
 # Copy the application code
 COPY . .
+
+EXPOSE 5000
 
 # Run the application
 CMD ["python", "app.py"]
