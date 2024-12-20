@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-record-deployment
+  labels:
+    app: patient-record
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: patient-record
+  template:
+    metadata:
+      labels:
+        app: patient-record
+    spec:
+      containers:
+        - name: patient-record
+          image: 698443748044.dkr.ecr.us-east-1.amazonaws.com/patient-record:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DB_HOST
+              value: "ec2-54-81-109-229.compute-1.amazonaws.com"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "meditrack"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient-record-service
+spec:
+  type: ClusterIP
+  selector:
+    app: patient-record
+  ports:
+    - port: 5000
+      targetPort: 5000
