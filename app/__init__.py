@@ -1,23 +1,29 @@
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
+from app.models import db
+from app.routes import patient_blueprint
 
 def create_app():
     app = Flask(__name__)
-    
-    # Get database configuration from environment variables
-    DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_PORT = os.getenv("DB_PORT", "5432")
-    DB_NAME = os.getenv("DB_NAME", "meditrack")
-    DB_USER = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
-    
-    # Build the database URI
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql+psycopg2://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.secret_key = os.getenv("SECRET_KEY", "your_default_secret_key")
+
+    # Retrieve database connection details from environment variables
+    db_user = os.getenv('DB_USER', 'postgres')
+    db_password = os.getenv('DB_PASSWORD', 'ec2-54-81-109-229.compute-1.amazonaws.com')
+    db_host = os.getenv('DB_HOST', 'localhost')
+    db_port = os.getenv('DB_PORT', '5432')
+    db_name = os.getenv('DB_NAME', 'meditrack')
+
+    # Construct the database URI
+    app.config['SQLALCHEMY_DATABASE_URI'] = (
+        f'postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
+    )
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
+
+    # Ensure tables are created
+    with app.app_context():
+        db.create_all()
+
+    app.register_blueprint(patient_blueprint, url_prefix='/patient-record-service/')
     return app
