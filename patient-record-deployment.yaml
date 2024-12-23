@@ -27,7 +27,7 @@ spec:
             - containerPort: 5000
           env:
             - name: DB_HOST
-              value: "ec2-54-81-109-229.compute-1.amazonaws.com"
+              value: "ec2-54-208-97-188.compute-1.amazonaws.com"
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
